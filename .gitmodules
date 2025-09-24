@@ -1,0 +1,9 @@
+[submodule "disciplina"]
+	path = disciplina
+	url = https://github.com/ndocolas/disciplina.git
+[submodule "turma"]
+	path = turma
+	url = https://github.com/ndocolas/turma.git
+[submodule "estudante"]
+	path = estudante
+	url = https://github.com/ndocolas/estudante.git
