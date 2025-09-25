@@ -1,0 +1,51 @@
+services:
+  estudante:
+    build:
+      context: ./estudante
+      dockerfile: Dockerfile
+    environment:
+      SERVER_PORT: "8081"
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
+  disciplina:
+    build:
+      context: ./disciplina
+      dockerfile: Dockerfile
+    environment:
+      SERVER_PORT: "8082"
+    ports:
+      - "8082:8082"
+    depends_on:
+      estudante:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8082/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+
+  turma:
+    build:
+      context: ./turma
+    environment:
+      SERVER_PORT: "8083"
+      ESTUDANTE_BASE_URL: "http://estudante:8081"
+      DISCIPLINA_BASE_URL: "http://disciplina:8082"
+    ports:
+      - "8083:8083"
+    depends_on:
+      estudante:
+        condition: service_healthy
+      disciplina:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8083/actuator/health"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
